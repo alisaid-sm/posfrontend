@@ -1,6 +1,8 @@
 # posfrontend
-Aplikasi ini dibuat menggunakan vue.js di dalam app ini terdapat fitur add data,delete data, update data
+Aplikasi ini dibuat menggunakan vue.js di dalam app ini terdapat fitur add data,delete data, update data.
+
 di app ini terdapat 5 halaman
+
 1. Halaman Home
 
 ![Screenshot from 2020-09-24 03-11-05](https://user-images.githubusercontent.com/68319083/94064458-ef3ff000-fe13-11ea-8905-6d8b2c65c38b.png)
