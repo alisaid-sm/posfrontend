@@ -1,7 +1,7 @@
 # posfrontend
 Aplikasi ini dibuat menggunakan vue.js di dalam app ini terdapat fitur add data,delete data, update data.
 
-di app ini terdapat 5 halaman
+Aplikasi POS ini didalamnya terdapat 6 halaman
 
 1. Halaman Home
 
