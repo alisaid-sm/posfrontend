@@ -1,7 +1,7 @@
 <template>
   <div>
-        <div class="" :class="{ select:true, selected: selecting }" @click="activeLink()">
-        <img class=" img-responsive img-fluid img-edit" v-bind:src="'http://localhost:3000/'+ item.image" />
+        <div class="" :class="{ select:true, selected: selecting }" @click="activeLink();$emit('getmenu', item.id_product)">
+        <img class=" img-responsive img-fluid img-edit" v-bind:src="`${IP}/`+ item.image" />
         </div>
         <p class=" h5 mt-1">{{item.name}}</p>
         <p class=" font-weight-bold h5 text-price">Rp. {{item.price}}</p>
@@ -15,8 +15,10 @@
 </template>
 
 <script>
+import env from '../mixins/env'
 export default {
   name: 'Product',
+  mixins: [env],
   props: ['item', 'index'],
   data () {
     return {
