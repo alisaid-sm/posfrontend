@@ -22,6 +22,25 @@ Aplikasi POS ini didalamnya terdapat 6 halaman
 
 ![Screenshot from 2020-09-24 03-12-47](https://user-images.githubusercontent.com/68319083/94064557-0d0d5500-fe14-11ea-87eb-c05a34a31812.png)
 
+# Fiture aplikasi
+
+. Terdapat Halaman Register, login, Home, History
+
+. Terdapat Modal add data, Modal Update data
+
+. Navbar, Sidebar, Card, dan Cart sudah menggunakan Component
+
+. Sudah responsive
+
+. Login, logout, register berfungsi dengan validasinya
+
+. Refresh token berfungsi
+
+. CRUD berfungsi
+
+. Sudah menggunakan custome directive, mixins, env dan vuex
+
+. Menggunakan Local storage untuk menyimpan token dan refresh token
 
 ## Project setup
 ```
