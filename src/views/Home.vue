@@ -18,22 +18,33 @@
           </b-collapse>
           </div>
         <div class="col-12 mt-3"><!-- <= Sort BY -->
-            <div class="row justify-content-end">
-              <div class="col-md-3 col-4">
-                <select v-model="sort" class="form-control form-additem">
-                  <option selected value="">Sort by</option>
-                  <option value="name">Name</option>
-                  <option value="price">Price</option>
-                  <option value="date">date</option>
-                </select>
-              </div>
-              <div class="col-md-2 col-3">
-                <select v-model="sorttype" class="form-control form-additem">
-                  <option selected value=''>ASC</option>
-                  <option value="DESC">DESC</option>
-                </select>
-              </div>
-            </div>
+        <div class="row">
+          <div class="col-6">
+            <nav aria-label="...">
+            <ul class="pagination pagination-lg">
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                  1
+                  <span class="sr-only">(current)</span>
+                </span>
+              </li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+            </ul>
+          </nav>
+          </div>
+          <div class="col-3 ml-auto">
+            <select v-model="sort" @change="sortProducts" class="form-control form-additem">
+              <option selected :value="null">Sort by</option>
+              <option :value="{sort: 'name', sorttype: 'asc'}">Name</option>
+              <option :value="{sort: 'price', sorttype: 'asc'}">Price</option>
+              <option :value="{sort: 'date', sorttype: 'asc'}">date</option>
+              <option :value="{sort: 'name', sorttype: 'desc'}">Name DESC</option>
+              <option :value="{sort: 'price', sorttype: 'desc'}">Price DESC</option>
+              <option :value="{sort: 'date', sorttype: 'desc'}">date DESC</option>
+            </select>
+          </div>
+        </div>
           </div>
           <div class="row"> <!-- <= Card Product -->
             <div class="col-12 text-center" v-if="allProducts.isLoading">
@@ -275,7 +286,7 @@ export default {
       },
       products: [],
       search: null,
-      sort: '',
+      sort: null,
       sorttype: '',
       menuget: []
     }
@@ -297,7 +308,8 @@ export default {
       actionAddProduct: 'product/addProduct',
       actionDelProduct: 'product/delProduct',
       actionUpdateProduct: 'product/updateProduct',
-      actionSearchProduct: 'product/searchProduct'
+      actionSearchProduct: 'product/searchProduct',
+      actionSortProduct: 'product/sortProduct'
     }),
     prosesFile (event) {
       this.form.image = event.target.files[0]
@@ -380,6 +392,11 @@ export default {
       // console.log(this.search)
       this.$router.push({ path: '/', query: { search: this.search } })
       this.actionSearchProduct(this.search)
+    },
+    sortProducts () {
+      // console.log(this.search)
+      this.$router.push({ path: '/', query: { sort: this.sort.sort, sorttype: this.sort.sorttype } })
+      this.actionSortProduct(this.sort)
     },
     getMenu (id) {
       console.log(this.products.data)

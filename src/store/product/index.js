@@ -25,6 +25,9 @@ const mutations = {
   },
   SET_SEARCH (state, payload) {
     state.all.data = payload
+  },
+  SET_SORT (state, payload) {
+    state.all.data = payload
   }
 }
 
@@ -82,6 +85,15 @@ const actions = {
     try {
       const result = await axios.get(`${IP}/api/v1/product/getall?search=${payload}`)
       context.commit('SET_SEARCH', result.data.data, payload)
+    } catch (error) {
+      console.log(error.message)
+    }
+  },
+  async sortProduct (context, payload) {
+    console.log(payload)
+    try {
+      const result = await axios.get(`${IP}/api/v1/product/getall?sort=${payload.sort}&sorttype=${payload.sorttype}`)
+      context.commit('SET_SORT', result.data.data, payload)
     } catch (error) {
       console.log(error.message)
     }
