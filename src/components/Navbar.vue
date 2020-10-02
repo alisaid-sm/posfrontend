@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'Navbar',
   data () {
@@ -36,8 +37,13 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      actionSearchProduct: 'product/searchProduct'
+    }),
     searchProducts () {
-      this.$emit('search', this.searchkey)
+      // console.log(this.search)
+      this.$router.push({ path: '/', query: { search: this.searchkey } })
+      this.actionSearchProduct(this.searchkey)
     }
   }
 }

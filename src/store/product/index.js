@@ -22,6 +22,9 @@ const mutations = {
   },
   SET_ALL_LOADING (state, payload) {
     state.all.isLoading = payload
+  },
+  SET_SEARCH (state, payload) {
+    state.all.data = payload
   }
 }
 
@@ -65,15 +68,23 @@ const actions = {
   updateProduct (context, payload) {
     console.log(payload)
     return new Promise((resolve, reject) => {
-      axios.put(`${IP}/api/v1/product/update/${payload.id}`, payload.data)
+      axios.patch(`${IP}/api/v1/product/updatepatch/${payload.id}`, payload.data)
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data.message)
           resolve(response.data.message)
         }).catch((err) => {
           console.log(err)
           reject(err)
         })
     })
+  },
+  async searchProduct (context, payload) {
+    try {
+      const result = await axios.get(`${IP}/api/v1/product/getall?search=${payload}`)
+      context.commit('SET_SEARCH', result.data.data, payload)
+    } catch (error) {
+      console.log(error.message)
+    }
   }
 }
 

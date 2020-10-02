@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <div class="row">
-      <div class="col-lg-8 col-12"><Navbar :totalcart="menuget.length"/></div>
+      <div class="col-lg-8 col-12"><Navbar :totalcart="menuget.length" @search='searchProducts'/></div>
       <div class="col-4 d-lg-block d-none"><Cartheader :totalcart="menuget.length"/></div>
     </div>
     <div class="row">
@@ -13,6 +13,7 @@
                 size="lg"
                 placeholder="Search"
                 v-model="search"
+                @keyup="searchProducts"
               ></b-form-input>
           </b-collapse>
           </div>
@@ -162,7 +163,7 @@
     <b-modal id="modal-1" size="lg" centered hide-header hide-footer>
       <div class="m-4">
         <p class="font-weight-bold h3 mb-5">Add Item</p>
-        <form @submit.prevent='addProducts'>
+        <form @submit.prevent='addProducts' enctype="multipart/form-data">
           <div class="form-group row font-weight-bold">
             <label for="name" class="col-sm-2 col-form-label col-form-label-lg">Name</label>
             <div class="col-sm-10">
@@ -213,7 +214,7 @@
           <div class="form-group row font-weight-bold">
             <label for="image" class="col-sm-2 col-form-label col-form-label-lg">Image</label>
             <div class="col-sm-10">
-              <input type="file" @change="prosesFile($event)" class="form-control form-control-lg form-additem" id="image"/>
+              <input type="file" @change="prosesSelectFile($event)" class="form-control form-control-lg form-additem" id="image"/>
             </div>
           </div>
           <div class="form-group row font-weight-bold">
@@ -235,7 +236,7 @@
           <div class="form-group row float-md-right float-sm-none float-none">
             <div class="col-sm-12">
               <b-button type="reset" class="btn btn-primary button-cancel font-weight-bold mr-3 ml-5">Cancel</b-button>
-              <b-button type="submit" class="btn btn-primary button-add font-weight-bold">Add</b-button>
+              <b-button type="submit" class="btn btn-primary button-add font-weight-bold">Update</b-button>
             </div>
           </div>
         </form>
@@ -295,7 +296,8 @@ export default {
       actionGetAllProduct: 'product/getAllProduct',
       actionAddProduct: 'product/addProduct',
       actionDelProduct: 'product/delProduct',
-      actionUpdateProduct: 'product/updateProduct'
+      actionUpdateProduct: 'product/updateProduct',
+      actionSearchProduct: 'product/searchProduct'
     }),
     prosesFile (event) {
       this.form.image = event.target.files[0]
@@ -310,8 +312,14 @@ export default {
       console.log(fd)
       this.actionAddProduct(fd)
         .then((response) => {
-          alert(response)
-          window.location = '/'
+          if (response === 'image type must jpg, jpeg, or png') {
+            alert(response)
+          } else if (response === 'File too large, max size 100kb') {
+            alert(response)
+          } else {
+            alert(response)
+            window.location = '/'
+          }
         }).catch((err) => {
           console.log(err)
         })
@@ -339,7 +347,7 @@ export default {
       this.formupd.image = this.products.data[index].image
       this.formupd.category = this.products.data[index].id_category
 
-      console.log(this.formupd)
+      console.log(this.formupd.image)
     },
     updateProduct () {
       // console.log(id)
@@ -355,11 +363,23 @@ export default {
       }
       this.actionUpdateProduct(payload)
         .then((response) => {
-          alert(response)
-          window.location = '/'
+          console.log(response)
+          if (response === 'image type must jpg, jpeg, or png') {
+            alert(response)
+          } else if (response === 'File too large, max size 100kb') {
+            alert(response)
+          } else {
+            alert(response)
+            window.location = '/'
+          }
         }).catch((err) => {
           console.log(err)
         })
+    },
+    searchProducts () {
+      // console.log(this.search)
+      this.$router.push({ path: '/', query: { search: this.search } })
+      this.actionSearchProduct(this.search)
     },
     getMenu (id) {
       console.log(this.products.data)

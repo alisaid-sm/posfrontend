@@ -11,6 +11,7 @@
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
             v-model="form.email"
+            required
           />
           <small
             id="emailHelp"
@@ -19,7 +20,7 @@
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" v-model="form.password" id="exampleInputPassword1" />
+          <input type="password" class="form-control" v-model="form.password" id="exampleInputPassword1" required/>
         </div>
         <div class="form-group form-check">
           <input type="checkbox" class="form-check-input" id="exampleCheck1" />
