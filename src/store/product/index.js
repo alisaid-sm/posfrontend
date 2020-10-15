@@ -34,12 +34,17 @@ const mutations = {
 const actions = {
   getAllProduct (context, payload) {
     context.commit('SET_ALL_LOADING', true)
+    const fd = {
+      limit: payload.limit === undefined ? '' : payload.limit,
+      page: payload.page === undefined ? '' : payload.page
+    }
     return new Promise((resolve, reject) => {
-      axios.get(`${IP}/api/v1/product/getall`)
+      axios.get(`${IP}/api/v1/product/getall?limit=${fd.limit}&page=${fd.page}`)
         .then((response) => {
           context.commit('SET_ALL_DATA', response.data.data)
+          resolve(response.data)
         }).catch((err) => {
-          console.log(err)
+          reject(err)
         }).finally(() => {
           context.commit('SET_ALL_LOADING', false)
         })

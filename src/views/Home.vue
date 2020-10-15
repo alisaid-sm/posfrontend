@@ -17,23 +17,19 @@
               ></b-form-input>
           </b-collapse>
           </div>
-        <div class="col-12 mt-3"><!-- <= Sort BY -->
+        <div class="col-12 mt-3"><!-- <= Pagination -->
         <div class="row">
           <div class="col-6">
-            <nav aria-label="...">
-            <ul class="pagination pagination-lg">
-              <li class="page-item active" aria-current="page">
-                <span class="page-link">
-                  1
-                  <span class="sr-only">(current)</span>
-                </span>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-            </ul>
-          </nav>
+            <div class="row no-gutters mt-3">
+              <div class="col-3">
+                <b-form-input @change="page()" @keyup="page()" v-model="limit" type="number"  placeholder="Limit" ></b-form-input>
+              </div>
+              <div class="col-9" @click="page()">
+                <b-pagination v-model="currentPage" :per-page="limit" :total-rows="rows"></b-pagination>
+              </div>
+            </div>
           </div>
-          <div class="col-3 ml-auto">
+          <div class="col-3 ml-auto"><!-- <= Sort BY -->
             <select v-model="sort" @change="sortProducts" class="form-control form-additem">
               <option selected :value="null">Sort by</option>
               <option :value="{sort: 'name', sorttype: 'asc'}">Name</option>
@@ -225,7 +221,7 @@
           <div class="form-group row font-weight-bold">
             <label for="image" class="col-sm-2 col-form-label col-form-label-lg">Image</label>
             <div class="col-sm-10">
-              <input type="file" @change="prosesSelectFile($event)" class="form-control form-control-lg form-additem" id="image"/>
+              <input type="file" @change="prosesFile($event)" class="form-control form-control-lg form-additem" id="image"/>
             </div>
           </div>
           <div class="form-group row font-weight-bold">
@@ -288,7 +284,10 @@ export default {
       search: null,
       sort: null,
       sorttype: '',
-      menuget: []
+      menuget: [],
+      currentPage: 1,
+      rows: null,
+      limit: ''
     }
   },
   components: {
@@ -405,10 +404,30 @@ export default {
         ...this.menuget, data[0]
       ]
       console.log(this.menuget)
+    },
+    page () {
+      const payload = {
+        limit: this.limit,
+        page: this.currentPage
+      }
+      this.$router.push({ path: '/', query: { limit: this.limit, page: this.currentPage } })
+      this.actionGetAllProduct(payload)
+        .then((result) => {
+          this.rows = result.meta.totalRows
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   mounted () {
-    this.actionGetAllProduct()
+    this.actionGetAllProduct({ limit: '', page: '' })
+      .then((result) => {
+        this.rows = result.meta.totalRows
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     this.products = this.allProducts
   }
   // methods: {
