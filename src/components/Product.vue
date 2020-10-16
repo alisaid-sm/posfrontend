@@ -27,11 +27,7 @@ export default {
   },
   methods: {
     activeLink () {
-      if (this.selecting === true) {
-        this.selecting = false
-      } else {
-        this.selecting = true
-      }
+      this.selecting = true
     }
   }
 }

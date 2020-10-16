@@ -72,14 +72,14 @@
                                     <div class="col-md-6 col-sm-6 col-6">
                                         <div class="row no-gutters ml-2">
                                             <div class="col-md-4 col-sm-4 col-4 ">
-                                                <button type="button"
+                                                <button @click="kurang(item.id_product)" type="button"
                                                     class="btn btn-primary btn-block button-checkout min-cart">-</button>
                                             </div>
                                             <div class="col-md-4 col-sm-4 col-4">
-                                                <p class="num-cart">1</p>
+                                                <p class="num-cart">{{item.qty}}</p>
                                             </div>
                                             <div class="col-md-4 col-sm-4 col-4 ">
-                                                <button type="button"
+                                                <button @click="tambah(item.id_product)" type="button"
                                                     class="btn btn-primary btn-block button-checkout plus-cart">+</button>
                                             </div>
                                         </div>
@@ -100,13 +100,13 @@
                         </div>
                         <!-- price -->
                         <div class="col-md-6 col-sm-6 col-6">
-                            <p class="font-weight-bold h5 float-right">Rp. 148.000*</p>
+                            <p class="font-weight-bold h5 float-right">Rp. {{jumlahtr}}</p>
                         </div>
                         <!-- button checkout -->
                         <div class="shadow col-12 mb-3">
                             <button type="button" class="shadow btn btn-primary btn-block button-checkout" data-toggle="modal"
                                 data-target="#myModal">Checkout</button>
-                            <button type="button" class="shadow btn btn-primary btn-block button-cancelcart">Cancel</button>
+                            <button type="button" @click="cancel()" class="shadow btn btn-primary btn-block button-cancelcart">Cancel</button>
                         </div>
                         <!-- button cancel -->
                         <!-- <div class="shadow col-12 mb-3">
@@ -285,6 +285,8 @@ export default {
       sort: null,
       sorttype: '',
       menuget: [],
+      priceget: [],
+      jumlahtr: 0,
       currentPage: 1,
       rows: null,
       limit: ''
@@ -398,12 +400,41 @@ export default {
       this.actionSortProduct(this.sort)
     },
     getMenu (id) {
-      console.log(this.products.data)
-      const data = this.products.data.filter((e) => e.id_product === id)
-      this.menuget = [
-        ...this.menuget, data[0]
-      ]
-      console.log(this.menuget)
+      const menuget = this.menuget.filter((e) => e.id_product === id)
+      if (menuget.length === 0) {
+        const data = this.products.data.filter((e) => e.id_product === id)
+        data[0].qty = 1
+        this.menuget = [
+          ...this.menuget, data[0]
+        ]
+        this.priceget = [
+          ...this.priceget, data[0].price
+        ]
+        const reducer = (accumulator, currentValue) => accumulator + currentValue
+        this.jumlahtr = this.priceget.reduce(reducer)
+      } else {
+        this.changeMenuget(id, 'add')
+      }
+      // console.log(this.menuget)
+    },
+    kurang (id) {
+      this.changeMenuget(id, 'min')
+    },
+    tambah (id) {
+      this.changeMenuget(id, 'add')
+    },
+    changeMenuget (id, category) {
+      const dataBaru = this.menuget.map((e, i) => {
+        if (e.id_product === id) {
+          if (category === 'add') {
+            e.qty += 1
+          } else if (category === 'min') {
+            e.qty -= 1
+          }
+        }
+        return e
+      })
+      this.menuget = dataBaru
     },
     page () {
       const payload = {
@@ -418,6 +449,9 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+    cancel () {
+      window.location = '/'
     }
   },
   mounted () {
@@ -430,156 +464,5 @@ export default {
       })
     this.products = this.allProducts
   }
-  // methods: {
-  //   getMenu (id) {
-  //     // console.log(menu)
-  //     const data = this.products.filter((e) => e.id_product === id)
-  //     this.menuget = [
-  //       ...this.menuget, data[0]
-  //     ]
-  //     console.log(this.menuget.length)
-  //   },
-  //   getAll () {
-  //     axios
-  //       .get('http://34.228.247.42:3000/api/v1/product/getall')
-  //       .then((response) => {
-  //         console.log(response.data.data)
-  //         this.products = response.data.data
-  //       })
-  //       .catch((error) => {
-  //         console.log(error)
-  //       })
-  //   },
-  //   viewProducts (data) {
-  //     this.products = data
-  //   },
-  //   searchProducts (searchkey) {
-  //     // console.log(searchkey)
-  //     // console.log(this.search)
-  //     axios
-  //       .get(`http://34.228.247.42:3000/api/v1/product/getall?search=${searchkey}`)
-  //       .then((response) => {
-  //         this.viewProducts(response.data.data)
-  //       })
-  //       .catch((error) => {
-  //         console.log('coba' + error)
-  //       })
-  //   },
-  //   searchProduct () {
-  //     // console.log(searchkey)
-  //     // console.log(this.search)
-  //     axios
-  //       .get(`http://34.228.247.42:3000/api/v1/product/getall?search=${this.search}`)
-  //       .then((response) => {
-  //         this.viewProducts(response.data.data)
-  //       })
-  //       .catch((error) => {
-  //         console.log('coba' + error)
-  //       })
-  //   },
-  //   sortProducts () {
-  //     axios
-  //       .get(`http://34.228.247.42:3000/api/v1/product/getall?sort=${this.sort}&sorttype=${this.sorttype}`)
-  //       .then((response) => {
-  //         this.viewProducts(response.data.data)
-  //         // console.log(response.data.data[0].name)
-  //       })
-  //       .catch((error) => console.log(error))
-  //   },
-  //   prosesFile (event) {
-  //     this.form.image = event.target.files[0]
-  //     console.log(this.form.image)
-  //   },
-  //   addProducts () {
-  //     // alert('Simpan')
-  //     const fd = new FormData()
-  //     fd.append('name', this.form.name)
-  //     fd.append('price', this.form.price)
-  //     fd.append('id_category', this.form.category)
-  //     fd.append('image', this.form.image)
-  //     // console.log(fd)
-  //     axios
-  //       .post('http://34.228.247.42:3000/api/v1/product/insert', fd)
-  //       .then((response) => {
-  //         this.$toast.success('Sukses Masuk Menu', {
-  //           type: 'success',
-  //           position: 'top-right',
-  //           duration: 3000,
-  //           dismissible: true
-  //         })
-  //         console.log(response)
-  //         setTimeout(() => {
-  //           this.getAll()
-  //         }, 2000)
-  //       })
-  //       .catch((error) => console.log(error))
-  //   },
-  //   updateGet (id, index) {
-  //     // console.log(`${id} ${index}`)
-  //     this.formupd.id = id
-  //     this.formupd.name = this.products[index].name
-  //     this.formupd.price = this.products[index].price
-  //     this.formupd.image = this.products[index].image
-  //     this.formupd.category = this.products[index].id_category
-
-  //     console.log(this.formupd.image)
-  //   },
-  //   updateProduct () {
-  //     // console.log(id)
-  //     // alert('update')
-  //     const fd = new FormData()
-  //     fd.append('name', this.formupd.name)
-  //     fd.append('price', this.formupd.price)
-  //     fd.append('id_category', this.formupd.category)
-  //     fd.append('image', this.form.image)
-  //     axios
-  //       .patch(`http://34.228.247.42:3000/api/v1/product/updatepatch/${this.formupd.id}`, fd)
-  //       .then((response) => {
-  //         this.$toast.success('Sukses Update Menu', {
-  //           type: 'success',
-  //           position: 'top-right',
-  //           duration: 3000,
-  //           dismissible: true
-  //         })
-  //         console.log(response)
-  //         setTimeout(() => {
-  //           this.getAll()
-  //         }, 2000)
-  //       })
-  //       .catch((error) => console.log(error))
-  //   },
-  //   hapusProduct (id) {
-  //     var result = confirm('Want to delete?')
-
-  //     if (result) {
-  //       axios
-  //         .delete('http://34.228.247.42:3000/api/v1/product/delete/' + id)
-  //         .then((response) => {
-  //           this.$toast.error('Sukses Hapus Keranjang', {
-  //             type: 'error',
-  //             position: 'top-right',
-  //             duration: 3000,
-  //             dismissible: true
-  //           })
-  //           console.log(response)
-  //           setTimeout(() => {
-  //             this.getAll()
-  //           }, 2000)
-  //         })
-  //         .catch((error) => console.log(error))
-  //     }
-  //   }
-  // },
-  // mounted () {
-  //   axios
-  //     .get('http://34.228.247.42:3000/api/v1/product/getall')
-  //     .then((response) => {
-  //       this.viewProducts(response.data.data)
-  //       // console.log(response.data.data[0].name)
-  //     })
-  //     .catch((error) => console.log(error))
-  // },
-  // updated () {
-  // }
 }
 </script>
