@@ -286,6 +286,7 @@ export default {
       sorttype: '',
       menuget: [],
       priceget: [],
+      pricetetap: [],
       jumlahtr: 0,
       currentPage: 1,
       rows: null,
@@ -428,8 +429,14 @@ export default {
         if (e.id_product === id) {
           if (category === 'add') {
             e.qty += 1
+            const pricettp = this.pricetetap[i]
+            e.price = pricettp * e.qty
+            console.log(this.pricetetap[i])
           } else if (category === 'min') {
             e.qty -= 1
+            const pricettp = this.pricetetap[i]
+            e.price = pricettp * e.qty
+            console.log(this.pricetetap[i])
           }
         }
         return e
@@ -463,6 +470,12 @@ export default {
         console.log(err)
       })
     this.products = this.allProducts
+    this.allProducts.data.map((e, i) => {
+      this.pricetetap = [
+        ...this.pricetetap, e.price
+      ]
+    })
+    console.log(this.pricetetap)
   }
 }
 </script>
