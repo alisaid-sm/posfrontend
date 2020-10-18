@@ -100,7 +100,7 @@
                         </div>
                         <!-- price -->
                         <div class="col-md-6 col-sm-6 col-6">
-                            <p class="font-weight-bold h5 float-right">Rp. {{jumlahtr}}</p>
+                            <p class="font-weight-bold h5 float-right">Rp. {{jumlahharga}}</p>
                         </div>
                         <!-- button checkout -->
                         <div class="shadow col-12 mb-3">
@@ -286,8 +286,7 @@ export default {
       sorttype: '',
       menuget: [],
       priceget: [],
-      jumlahharga: [],
-      jumlahtr: 0,
+      jumlahharga: 0,
       currentPage: 1,
       rows: null,
       limit: ''
@@ -411,8 +410,9 @@ export default {
         this.priceget = [
           ...this.priceget, data[0].price
         ]
-        const reducer = (accumulator, currentValue) => accumulator + currentValue
-        this.jumlahtr = this.priceget.reduce(reducer)
+        const reducer = (accumulator, currentValue) => ({ price: accumulator.price + currentValue.price })
+        const jumlah = this.menuget.reduce(reducer)
+        this.jumlahharga = jumlah.price
       } else {
         this.changeMenuget(id, 'add')
       }
@@ -440,6 +440,17 @@ export default {
         return e
       })
       this.menuget = dataBaru
+      // const dataJumlah = this.menuget.filter((e) => e.id_product === id)
+      // console.log(dataJumlah)
+      const reducer = (accumulator, currentValue) => ({ price: accumulator.price + currentValue.price })
+      const jumlah = this.menuget.reduce(reducer)
+      this.jumlahharga = jumlah.price
+      // // const reducer = (accumulator, currentValue) => accumulator + currentValue
+      // // this.jumlahtr = this.priceget.reduce(reducer)
+      // const j = this.priceget.reduce((accumulator, currentValue) => {
+      //   return
+      // })
+      // console.log(j)
     },
     page () {
       const payload = {
