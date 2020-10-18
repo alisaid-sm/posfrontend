@@ -85,7 +85,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-6 col-6">
-                                        <p class="font-weight-bold h6 float-right mt-2">{{item.price}}</p>
+                                        <p class="font-weight-bold h6 float-right mt-2">Rp. {{item.price}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -104,8 +104,7 @@
                         </div>
                         <!-- button checkout -->
                         <div class="shadow col-12 mb-3">
-                            <button type="button" class="shadow btn btn-primary btn-block button-checkout" data-toggle="modal"
-                                data-target="#myModal">Checkout</button>
+                            <button type="button" class="shadow btn btn-primary btn-block button-checkout" v-b-modal.modal-checkout>Checkout</button>
                             <button type="button" @click="cancel()" class="shadow btn btn-primary btn-block button-cancelcart">Cancel</button>
                         </div>
                         <!-- button cancel -->
@@ -249,6 +248,58 @@
         </form>
       </div>
     </b-modal>
+    <b-modal id="modal-checkout" size="lg" centered hide-header hide-footer>
+                <div class="modal-body m-4">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-12">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 col-6">
+                                    <p class="font-weight-bold h2">Checkout</p>
+                                    <p class="font-weight-bold h6 mb-5">Cashier : Pevita Pearce</p>
+                                    <div v-for="(item, index) in menuget" :key="index">
+                                      <p class="font-weight-bold h5 mb-3">{{item.name}}</p>
+                                    </div>
+                                    <p class="font-weight-bold h5 mb-5">Ppn 10%</p>
+                                    <p class="font-weight-bold h5 mb-3">Payment: Cash</p>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-6 w-100 text-right">
+                                    <p class="font-weight-bold h5" style="margin-bottom: 5.6rem;">Receipt no:
+                                        #010410919
+                                    </p>
+                                    <div v-for="(item, index) in menuget" :key="index">
+                                      <p class="font-weight-bold h5 mb-3">Rp. {{item.price}}</p>
+                                    </div>
+                                    <p class="font-weight-bold h5 mb-3">Rp. {{ppn}}</p>
+                                    <p class="font-weight-bold h5 mb-3">Total: Rp. {{total}}
+                                    </p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-block button-print" @click="createPDF()">Print</button>
+                            <p class="font-weight-bold h5 mb-2 mt-2 w-100 text-center">Or</p>
+                            <button type="button" class="btn btn-primary btn-block button-email">Send Email</button>
+                        </div>
+                    </div>
+                </div>
+    </b-modal>
+    <div class="d-none">
+      <div id="print">
+        <p>Cashier:PevitaPearce</p>
+        <table>
+          <tr>
+            <th>Food/Drink</th>
+            <th>Price</th>
+          </tr>
+          <tr v-for="(item, index) in menuget" :key="index">
+            <td>{{item.name}}</td>
+            <td>Rp.{{item.price}}</td>
+          </tr>
+          <tr>
+            <td>Total+Ppn10%: </td>
+            <td>Rp.{{total}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </b-container>
 </template>
 
@@ -261,6 +312,8 @@ import Product from '@/components/Product.vue'
 
 // import axios from 'axios'
 import { mapActions, mapGetters } from 'vuex'
+// eslint-disable-next-line no-unused-vars
+import { jsPDF } from 'jspdf'
 import env from '../mixins/env'
 export default {
   name: 'Home',
@@ -287,6 +340,8 @@ export default {
       menuget: [],
       priceget: [],
       jumlahharga: 0,
+      ppn: 0,
+      total: 0,
       currentPage: 1,
       rows: null,
       limit: ''
@@ -413,6 +468,8 @@ export default {
         const reducer = (accumulator, currentValue) => ({ price: accumulator.price + currentValue.price })
         const jumlah = this.menuget.reduce(reducer)
         this.jumlahharga = jumlah.price
+        this.ppn = this.jumlahharga / 10
+        this.total = this.jumlahharga + this.ppn
       } else {
         this.changeMenuget(id, 'add')
       }
@@ -432,7 +489,11 @@ export default {
             console.log(`${this.priceget[i]}*${e.qty}`)
             e.price = this.priceget[i] * e.qty
           } else if (category === 'min') {
-            e.qty -= 1
+            if (e.qty <= 1) {
+              e.qty = 1
+            } else {
+              e.qty -= 1
+            }
             console.log(`${this.priceget[i]}*${e.qty}`)
             e.price = this.priceget[i] * e.qty
           }
@@ -440,17 +501,11 @@ export default {
         return e
       })
       this.menuget = dataBaru
-      // const dataJumlah = this.menuget.filter((e) => e.id_product === id)
-      // console.log(dataJumlah)
       const reducer = (accumulator, currentValue) => ({ price: accumulator.price + currentValue.price })
       const jumlah = this.menuget.reduce(reducer)
       this.jumlahharga = jumlah.price
-      // // const reducer = (accumulator, currentValue) => accumulator + currentValue
-      // // this.jumlahtr = this.priceget.reduce(reducer)
-      // const j = this.priceget.reduce((accumulator, currentValue) => {
-      //   return
-      // })
-      // console.log(j)
+      this.ppn = this.jumlahharga / 10
+      this.total = this.jumlahharga + this.ppn
     },
     page () {
       const payload = {
@@ -468,6 +523,22 @@ export default {
     },
     cancel () {
       window.location = '/'
+    },
+    createPDF () {
+      const pdfName = `transaksi-${Date.now()}`
+      const element = document.getElementById('print')
+      console.log(element)
+      // eslint-disable-next-line new-cap
+      const doc = new jsPDF()
+
+      doc.html(element, {
+        callback: function (doc) {
+          doc.save(pdfName + '.pdf')
+          window.location = '/'
+        },
+        x: 10,
+        y: 10
+      })
     }
   },
   mounted () {
