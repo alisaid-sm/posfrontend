@@ -286,7 +286,7 @@ export default {
       sorttype: '',
       menuget: [],
       priceget: [],
-      pricetetap: [],
+      jumlahharga: [],
       jumlahtr: 0,
       currentPage: 1,
       rows: null,
@@ -429,14 +429,12 @@ export default {
         if (e.id_product === id) {
           if (category === 'add') {
             e.qty += 1
-            const pricettp = this.pricetetap[i]
-            e.price = pricettp * e.qty
-            console.log(this.pricetetap[i])
+            console.log(`${this.priceget[i]}*${e.qty}`)
+            e.price = this.priceget[i] * e.qty
           } else if (category === 'min') {
             e.qty -= 1
-            const pricettp = this.pricetetap[i]
-            e.price = pricettp * e.qty
-            console.log(this.pricetetap[i])
+            console.log(`${this.priceget[i]}*${e.qty}`)
+            e.price = this.priceget[i] * e.qty
           }
         }
         return e
@@ -470,12 +468,6 @@ export default {
         console.log(err)
       })
     this.products = this.allProducts
-    this.allProducts.data.map((e, i) => {
-      this.pricetetap = [
-        ...this.pricetetap, e.price
-      ]
-    })
-    console.log(this.pricetetap)
   }
 }
 </script>
