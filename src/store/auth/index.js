@@ -9,7 +9,6 @@ const state = () => {
 
 const getters = {
   isLogin (state) {
-    console.log(state)
     // eslint-disable-next-line quotes
     if (state.token !== null && state.token !== "undefined") {
       return true
@@ -21,7 +20,6 @@ const getters = {
 
 const actions = {
   login (context, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.post(`${IP}/api/v1/users/login`, payload)
         .then((response) => {

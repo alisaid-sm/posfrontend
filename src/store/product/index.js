@@ -61,27 +61,21 @@ const actions = {
     })
   },
   delProduct (context, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.delete(`${IP}/api/v1/product/delete/${payload}`)
         .then((response) => {
-          console.log(response.data)
           resolve(response.data.message)
         }).catch((err) => {
-          console.log(err)
           reject(err)
         })
     })
   },
   updateProduct (context, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.patch(`${IP}/api/v1/product/updatepatch/${payload.id}`, payload.data)
         .then((response) => {
-          console.log(response.data.message)
           resolve(response.data.message)
         }).catch((err) => {
-          console.log(err)
           reject(err)
         })
     })
@@ -91,16 +85,13 @@ const actions = {
       const result = await axios.get(`${IP}/api/v1/product/getall?search=${payload}`)
       context.commit('SET_SEARCH', result.data.data, payload)
     } catch (error) {
-      console.log(error.message)
     }
   },
   async sortProduct (context, payload) {
-    console.log(payload)
     try {
       const result = await axios.get(`${IP}/api/v1/product/getall?sort=${payload.sort}&sorttype=${payload.sorttype}`)
       context.commit('SET_SORT', result.data.data, payload)
     } catch (error) {
-      console.log(error.message)
     }
   }
 }

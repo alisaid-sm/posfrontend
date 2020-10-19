@@ -21,7 +21,6 @@ axios.interceptors.response.use((response) => {
   return response
 }, async (err) => {
   const status = err.response.status
-  console.log(status)
   if (status === 500) {
     alert('refreshtoken')
     const refreshtoken = localStorage.getItem('refreshtoken')
@@ -30,11 +29,8 @@ axios.interceptors.response.use((response) => {
     }
     await axios.post(`${IP}/api/v1/users/refresh-token`, fd)
       .then((response) => {
-        console.log(response.data.message)
         localStorage.setItem('token', response.data.data.token)
         window.location = '/'
-      }).catch((err) => {
-        console.log(err)
       })
   } else {
     window.location = '/login'

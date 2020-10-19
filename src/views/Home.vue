@@ -369,7 +369,6 @@ export default {
     }),
     prosesFile (event) {
       this.form.image = event.target.files[0]
-      console.log(this.form.image)
     },
     addProducts () {
       const fd = new FormData()
@@ -377,7 +376,7 @@ export default {
       fd.append('price', this.form.price)
       fd.append('id_category', this.form.category)
       fd.append('image', this.form.image)
-      console.log(fd)
+
       this.actionAddProduct(fd)
         .then((response) => {
           if (response === 'image type must jpg, jpeg, or png') {
@@ -388,21 +387,16 @@ export default {
             alert(response)
             window.location = '/'
           }
-        }).catch((err) => {
-          console.log(err)
         })
     },
     delProduct (id) {
       var result = confirm('Want to delete?')
 
       if (result) {
-        console.log(id)
         this.actionDelProduct(id)
           .then((response) => {
             alert(response)
             window.location = '/'
-          }).catch((err) => {
-            console.log(err)
           })
       }
     },
@@ -414,8 +408,6 @@ export default {
       this.formupd.price = this.products.data[index].price
       this.formupd.image = this.products.data[index].image
       this.formupd.category = this.products.data[index].id_category
-
-      console.log(this.formupd.image)
     },
     updateProduct () {
       // console.log(id)
@@ -431,7 +423,6 @@ export default {
       }
       this.actionUpdateProduct(payload)
         .then((response) => {
-          console.log(response)
           if (response === 'image type must jpg, jpeg, or png') {
             alert(response)
           } else if (response === 'File too large, max size 100kb') {
@@ -440,8 +431,6 @@ export default {
             alert(response)
             window.location = '/'
           }
-        }).catch((err) => {
-          console.log(err)
         })
     },
     searchProducts () {
@@ -486,7 +475,7 @@ export default {
         if (e.id_product === id) {
           if (category === 'add') {
             e.qty += 1
-            console.log(`${this.priceget[i]}*${e.qty}`)
+
             e.price = this.priceget[i] * e.qty
           } else if (category === 'min') {
             if (e.qty <= 1) {
@@ -494,7 +483,6 @@ export default {
             } else {
               e.qty -= 1
             }
-            console.log(`${this.priceget[i]}*${e.qty}`)
             e.price = this.priceget[i] * e.qty
           }
         }
@@ -517,9 +505,6 @@ export default {
         .then((result) => {
           this.rows = result.meta.totalRows
         })
-        .catch((err) => {
-          console.log(err)
-        })
     },
     cancel () {
       window.location = '/'
@@ -527,10 +512,8 @@ export default {
     createPDF () {
       const pdfName = `transaksi-${Date.now()}`
       const element = document.getElementById('print')
-      console.log(element)
       // eslint-disable-next-line new-cap
       const doc = new jsPDF()
-
       doc.html(element, {
         callback: function (doc) {
           doc.save(pdfName + '.pdf')
@@ -545,9 +528,6 @@ export default {
     this.actionGetAllProduct({ limit: '', page: '' })
       .then((result) => {
         this.rows = result.meta.totalRows
-      })
-      .catch((err) => {
-        console.log(err)
       })
     this.products = this.allProducts
   }
