@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid d-flex justify-content-center align-items-center bg-light">
-    <div class="title position-absolute"><h1>POS App</h1></div>
+ <div id="register">
     <div class="p-3 shadow form-login">
+      <h1>POSCafe</h1>
       <form @submit.prevent='register'>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
@@ -22,15 +22,11 @@
           <label for="exampleInputPassword1">Password</label>
           <input type="password" class="form-control" v-model="form.password" id="exampleInputPassword1" required/>
         </div>
-        <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1" required/>
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
         <button type="submit" class="btn btn-primary btn-block btn-login" v-backkolor="'#57CAD5'" >Register</button>
       </form>
       <p class="mt-3">Anda sudah memiliki akun ? <router-link to="/login" v-kolor="'#57CAD5'" >Login</router-link></p>
     </div>
-  </div>
+ </div>
 </template>
 
 <script>
@@ -75,8 +71,10 @@ export default {
 </script>
 
 <style>
-.container-fluid{
+#register {
+  background-color: #EBEDEF !important;
   height: 100vh;
+  padding: 50px 400px 0px 400px;
 }
 .btn-login{
     font-size: 20px !important;
@@ -93,7 +91,17 @@ export default {
 .title{
   top: 10%;
 }
-.form-login{
+#register .form-login{
   border-radius: 10px !important;
+  background-color: white;
+}
+@media (max-width: 992px) {
+  #register {
+    padding: 0px !important;
+    height: auto !important;
+  }
+  #register .form-login{
+  border-radius: 0px !important;
+}
 }
 </style>

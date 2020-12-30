@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid d-flex justify-content-center align-items-center bg-light">
-    <div class="title position-absolute"><h1>POS App</h1></div>
+  <div id="login">
     <div class="p-3 shadow form-login">
+      <h1>POSCafe</h1>
       <form @submit.prevent='login'>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
@@ -21,10 +21,6 @@
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
           <input type="password" class="form-control" v-model="form.password" id="exampleInputPassword1" required/>
-        </div>
-        <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
         </div>
         <button type="submit" class="btn btn-primary btn-block btn-login" v-backkolor="'#57CAD5'" >Login</button>
       </form>
@@ -75,8 +71,10 @@ export default {
 </script>
 
 <style>
-.container-fluid{
+#login {
   height: 100vh;
+  background-color: #EBEDEF !important;
+  padding: 50px 400px 0px 400px;
 }
 .btn-login{
     font-size: 20px !important;
@@ -90,10 +88,17 @@ export default {
 .btn-login:active{
     background-color: #29b2be !important;
 }
-.title{
-  top: 10%;
-}
-.form-login{
+#login .form-login{
   border-radius: 10px !important;
+  background-color: white;
+}
+@media (max-width: 992px) {
+  #login {
+    padding: 0px !important;
+    height: auto !important;
+  }
+  #login .form-login{
+  border-radius: 0px !important;
+}
 }
 </style>
